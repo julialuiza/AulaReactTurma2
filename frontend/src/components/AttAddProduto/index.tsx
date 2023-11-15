@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { IProduto } from "../ListaProdutos";
 import { Button, Form, Modal } from "react-bootstrap";
+import { IProduto } from "../../services/produto.service";
 
 interface AttAddProdutoProps {
   isShow: boolean;
@@ -16,12 +16,12 @@ export default function AttAddProduto(props: AttAddProdutoProps) {
   const [estoqueProduct, SetEstoqueProduct] = useState<number>(0);
 
   useEffect(() => {
-    if (props.productUpdate !== undefined) {
+    if (props.productUpdate) {
       SetNameProduct(props.productUpdate.nome);
       SetEstoqueProduct(props.productUpdate.estoque);
       SetPrecoProduct(props.productUpdate.preco);
     }
-  }, []);
+  }, [props.productUpdate]);
 
   function changeProduct() {
     const inpProduct: IProduto = {

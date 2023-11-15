@@ -3,13 +3,14 @@ import CustomTable, { TableColumn } from "../Tabela";
 import ConfirmationModal from "../Confirmacao";
 import AttAddProduto from "../AttAddProduto";
 import axios from "axios";
-
-export interface IProduto {
-  id: number;
-  nome: string;
-  preco: number;
-  estoque: number;
-}
+import {
+  CreateProduct,
+  DeleteProduct,
+  EditProduct,
+  IProduto,
+} from "../../services/produto.service";
+import { User } from "../../services/login.service";
+import ProductListGrid from "../ListaProdutosGrid";
 
 export default function ListaProdutos() {
   const productToDelete = useRef<IProduto>();
@@ -19,6 +20,7 @@ export default function ListaProdutos() {
   const [isModalAttAddOpen, SetIsModalAttAddOpenOpen] = useState(false);
 
   const [products, SetProducts] = useState<IProduto[]>([]);
+  const [user, SetUser] = useState<User>();
 
   useEffect(() => {
     async function fetchData() {
@@ -30,20 +32,23 @@ export default function ListaProdutos() {
     }
 
     fetchData();
+
+    const userLocalStorage = localStorage.getItem("user");
+
+    if (userLocalStorage !== undefined && userLocalStorage !== null) {
+      SetUser(JSON.parse(userLocalStorage));
+    }
   }, []);
 
   async function RemoverItemTabela(produtoToDelete: IProduto) {
     SetProducts(
       products.filter((produto) => produto.id !== produtoToDelete.id)
     );
-    
-    await axios.delete(
-      `http://localhost:3333/v1/produto/${produtoToDelete.id}`
-    );
+
+    await DeleteProduct(produtoToDelete.id);
   }
 
   const columnsProducts: TableColumn<IProduto>[] = [
-    { head: "ID", acessor: "id" },
     { head: "Nome", acessor: "nome" },
     { head: "Estoque", acessor: "estoque" },
     { head: "Preco", acessor: "preco" },
@@ -66,31 +71,45 @@ export default function ListaProdutos() {
     },
   ];
 
-  function AddProduto(produtoNew: IProduto) {
+  async function AddProduto(produtoNew: IProduto) {
     SetProducts([...products, produtoNew]);
+    await CreateProduct(produtoNew);
   }
 
-  function AttProduto(produtoAtt: IProduto) {
+  async function AttProduto(produtoAtt: IProduto) {
     SetProducts(
       products.map((prod) => {
         return prod.id === produtoAtt.id ? produtoAtt : prod;
       })
     );
+
+    await EditProduct(produtoAtt);
   }
 
   return (
     <div>
       <h1>Produtos</h1>
-      <button
-        onClick={() => {
-          productToUpdate.current = undefined;
-          SetIsModalAttAddOpenOpen(true);
-        }}
-      >
-        Inserir Produto
-      </button>
+      {user?.isAdmin ? (
+        <button
+          onClick={() => {
+            productToUpdate.current = undefined;
+            SetIsModalAttAddOpenOpen(true);
+          }}
+        >
+          Inserir Produto
+        </button>
+      ) : null}
 
-      <CustomTable data={products} columns={columnsProducts} />
+      {user?.isAdmin ? (
+        <CustomTable data={products} columns={columnsProducts} />
+      ) : (
+        <ProductListGrid
+          data={products}
+          onProductClicked={(obj) => {
+            console.log(obj);
+          }}
+        />
+      )}
 
       <AttAddProduto
         isShow={isModalAttAddOpen}
