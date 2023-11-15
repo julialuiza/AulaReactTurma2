@@ -7,6 +7,11 @@ export interface IProduto {
   estoque: number;
 }
 
+export async function FetchProducts(): Promise<IProduto[]> {
+  const res = await instance.http.get(`/produto`);
+  return res.data;
+}
+
 export async function DeleteProduct(idProduto: number) {
   await instance.http.delete(`/produto/${idProduto}`);
 }

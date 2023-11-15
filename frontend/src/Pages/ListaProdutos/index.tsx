@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import CustomTable, { TableColumn } from "../../components/Tabela";
 import ConfirmationModal from "../../components/Modals/Confirmacao";
 import AttAddProduto from "../../components/AttAddProduto";
-import axios from "axios";
 import {
   CreateProduct,
   DeleteProduct,
   EditProduct,
+  FetchProducts,
   IProduto,
 } from "../../services/produto.service";
 import { User } from "../../services/login.service";
@@ -26,11 +26,9 @@ export default function ListaProdutos() {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await axios.get<IProduto[]>(
-        "http://localhost:3333/v1/produto"
-      );
+      const res = await FetchProducts();
 
-      SetProducts(res.data);
+      SetProducts(res);
     }
 
     fetchData();

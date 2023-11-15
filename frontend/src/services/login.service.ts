@@ -8,8 +8,6 @@ export interface User {
 export async function DoLoginUser(email: string, senha: string): Promise<User> {
   const result = await instance.http.put("/auth", { email, senha });
 
-  console.log(email, senha);
-  
   if (result.status !== 200) throw Error();
 
   const user: User = {
