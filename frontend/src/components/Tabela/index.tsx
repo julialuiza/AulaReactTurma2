@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 
 export interface TableColumn<T> {
   acessor?: keyof T;
@@ -17,7 +17,6 @@ interface TableProps<T> {
 
 export default function CustomTable<T>(props: TableProps<T>) {
   return (
-    //<table className="table table-bordered table-striped">
     <Table bordered={true} striped={true}>
       <thead>
         <tr>
@@ -34,9 +33,9 @@ export default function CustomTable<T>(props: TableProps<T>) {
                 return (
                   <td key={index}>
                     {column.isActionButton ? (
-                      <button onClick={() => column.onActionClick?.(item)}>
+                      <Button onClick={() => column.onActionClick?.(item)}>
                         {column.head}
-                      </button>
+                      </Button>
                     ) : (
                       (item[column.acessor!] as ReactNode)
                     )}

@@ -9,6 +9,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import Logo from "../../assets/logo.png";
+import { Image } from "react-bootstrap";
 
 export default function Login() {
   const [email, SetEmail] = useState("");
@@ -76,7 +78,7 @@ export default function Login() {
           md={4}
           className="bg-light d-flex flex-column align-items-center justify-content-center"
         >
-          {/* <Image src={Logo} width={100} /> */}
+          <Image src={Logo} width={100} />
           <h2>Bem vindo à WA Loja!</h2>
         </Col>
         <Col

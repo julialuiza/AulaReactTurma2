@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import CustomTable, { TableColumn } from "../Tabela";
-import ConfirmationModal from "../Confirmacao";
-import AttAddProduto from "../AttAddProduto";
+import CustomTable, { TableColumn } from "../../components/Tabela";
+import ConfirmationModal from "../../components/Modals/Confirmacao";
+import AttAddProduto from "../../components/AttAddProduto";
 import axios from "axios";
 import {
   CreateProduct,
@@ -10,7 +10,9 @@ import {
   IProduto,
 } from "../../services/produto.service";
 import { User } from "../../services/login.service";
-import ProductListGrid from "../ListaProdutosGrid";
+import ProductListGrid from "../../components/ListaProdutosGrid";
+import { Button } from "react-bootstrap";
+import "../../App.css";
 
 export default function ListaProdutos() {
   const productToDelete = useRef<IProduto>();
@@ -51,7 +53,7 @@ export default function ListaProdutos() {
   const columnsProducts: TableColumn<IProduto>[] = [
     { head: "Nome", acessor: "nome" },
     { head: "Estoque", acessor: "estoque" },
-    { head: "Preco", acessor: "preco" },
+    { head: "R$ Preço", acessor: "preco" },
     {
       head: "Remover",
       isActionButton: true,
@@ -87,21 +89,34 @@ export default function ListaProdutos() {
   }
 
   return (
-    <div>
-      <h1>Produtos</h1>
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        overflow: "auto",
+      }}
+    >
       {user?.isAdmin ? (
-        <button
-          onClick={() => {
-            productToUpdate.current = undefined;
-            SetIsModalAttAddOpenOpen(true);
-          }}
-        >
-          Inserir Produto
-        </button>
-      ) : null}
+        <div style={{ width: "80%" }}>
+          {/* Button Inserir */}
+          <div style={{ marginRight: "0", padding: 10 }}>
+            <Button
+              variant="success"
+              onClick={() => {
+                productToUpdate.current = undefined;
+                SetIsModalAttAddOpenOpen(true);
+              }}
+            >
+              Inserir Produto
+            </Button>
+          </div>
 
-      {user?.isAdmin ? (
-        <CustomTable data={products} columns={columnsProducts} />
+          {/* Tabela para Edição de Produtos */}
+          <CustomTable data={products} columns={columnsProducts} />
+        </div>
       ) : (
         <ProductListGrid
           data={products}
