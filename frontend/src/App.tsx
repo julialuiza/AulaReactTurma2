@@ -3,6 +3,7 @@ import "./App.css";
 import Login from "./Pages/Login";
 import ListaProdutos from "./Pages/ListaProdutos";
 import NavBarLayout from "./Layout/NavbarLayout";
+import Cart from "./Pages/Carrinho";
 
 const router = createBrowserRouter([
   {
@@ -11,6 +12,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <ListaProdutos />,
+      },
+      {
+        path: "/carrinho",
+        element: <Cart />,
       },
     ],
   },

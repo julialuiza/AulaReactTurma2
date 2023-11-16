@@ -31,16 +31,21 @@ export default function CustomNavBar() {
         </Navbar.Brand>
         <Navbar.Collapse>
           <Nav>
-            <Nav.Link href="/produtos">Produtos</Nav.Link>
+            <Nav.Link href="/">Produtos</Nav.Link>
           </Nav>
 
           {user === undefined ? null : (
-            <div>
+            <>
               <Nav.Link onClick={() => LogoutUser()}>
                 <FontAwesomeIcon icon={faRightFromBracket} />
               </Nav.Link>
               <Nav style={{ margin: "0 auto" }}>User: {user?.email}</Nav>
-            </div>
+              {!user.isAdmin ? (
+                <Nav>
+                  <Nav.Link href="/carrinho">Carrinho</Nav.Link>
+                </Nav>
+              ) : null}
+            </>
           )}
         </Navbar.Collapse>
       </Container>

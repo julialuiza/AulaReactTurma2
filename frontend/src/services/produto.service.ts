@@ -12,6 +12,11 @@ export async function FetchProducts(): Promise<IProduto[]> {
   return res.data;
 }
 
+export async function FetchProduct(id: string): Promise<IProduto> {
+  const res = await instance.http.get(`/produto/${id}`);
+  return res.data;
+}
+
 export async function DeleteProduct(idProduto: number) {
   await instance.http.delete(`/produto/${idProduto}`);
 }
