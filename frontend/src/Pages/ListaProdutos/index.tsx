@@ -15,6 +15,7 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import "../../App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { AddCarrinho } from "../../services/carrinho.service";
 
 export default function ListaProdutos() {
   const productToDelete = useRef<IProduto>();
@@ -106,6 +107,10 @@ export default function ListaProdutos() {
     await EditProduct(produtoAtt);
   }
 
+  async function AddCart(produtoToCart: IProduto) {
+    await AddCarrinho(produtoToCart.id, 1);
+  }
+
   return (
     <div
       style={{
@@ -154,7 +159,7 @@ export default function ListaProdutos() {
         <ProductListGrid
           data={productsFilter}
           onProductClicked={(obj) => {
-            console.log(obj);
+            AddCart(obj);
           }}
         />
       )}

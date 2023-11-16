@@ -33,3 +33,11 @@ export async function CreateUser(
 
   if (result.status !== 201) throw Error();
 }
+
+export async function Logout() {
+  try {
+    await instance.http.delete("/auth");
+  } catch (error) {
+    console.log(error);
+  }
+}

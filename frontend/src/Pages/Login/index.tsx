@@ -53,7 +53,7 @@ export default function Login() {
     try {
       const res: User = await DoLoginUser(email, password);
       localStorage.setItem("user", JSON.stringify(res));
-      navigate("/produtos");
+      navigate("/");
     } catch (error) {
       ToastError("Verifique suas credências e tente novamente");
     }

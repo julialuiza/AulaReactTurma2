@@ -30,7 +30,9 @@ class Http {
 
       function (error) {
         if (axios.isAxiosError(error)) {
-          if (error.response?.status === 403) window.location.href = "/"; // Joga o usuario para tela inicial
+          if (error.response?.status === 401) {
+            window.location.href = "/login";
+          }
         }
       }
     );
