@@ -16,7 +16,6 @@ export default function ProductListGrid(props: GridViewProps) {
         display: "flex",
         justifyContent: "center",
         flexWrap: "wrap",
-        height: "100%",
       }}
     >
       {props.data.map((produto) => {

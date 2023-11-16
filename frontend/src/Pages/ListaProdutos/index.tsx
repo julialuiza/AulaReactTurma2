@@ -11,8 +11,10 @@ import {
 } from "../../services/produto.service";
 import { User } from "../../services/login.service";
 import ProductListGrid from "../../components/ListaProdutosGrid";
-import { Button } from "react-bootstrap";
+import { Button, Form, InputGroup } from "react-bootstrap";
 import "../../App.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 export default function ListaProdutos() {
   const productToDelete = useRef<IProduto>();
@@ -22,13 +24,17 @@ export default function ListaProdutos() {
   const [isModalAttAddOpen, SetIsModalAttAddOpenOpen] = useState(false);
 
   const [products, SetProducts] = useState<IProduto[]>([]);
+  const [productsFilter, SetProductsFilter] = useState<IProduto[]>([]);
+
   const [user, SetUser] = useState<User>();
+
+  const [productSearch, SetProductSearch] = useState<string>("");
 
   useEffect(() => {
     async function fetchData() {
       const res = await FetchProducts();
-
       SetProducts(res);
+      SetProductsFilter(res);
     }
 
     fetchData();
@@ -39,6 +45,20 @@ export default function ListaProdutos() {
       SetUser(JSON.parse(userLocalStorage));
     }
   }, []);
+
+  useEffect(() => {
+    if (productSearch === "") {
+      const arrayAux = products;
+
+      SetProductsFilter(arrayAux);
+    } else {
+      const arrayAux = products.filter((prod) =>
+        prod.nome.toUpperCase().includes(productSearch.toUpperCase()!)
+      );
+
+      SetProductsFilter(arrayAux);
+    }
+  }, [productSearch]);
 
   async function RemoverItemTabela(produtoToDelete: IProduto) {
     SetProducts(
@@ -97,6 +117,21 @@ export default function ListaProdutos() {
         overflow: "auto",
       }}
     >
+      <div style={{ width: 250 }}>
+        <InputGroup>
+          <InputGroup.Text>
+            <FontAwesomeIcon icon={faSearch} />
+          </InputGroup.Text>
+          <Form.Control
+            type="text"
+            placeholder="Search"
+            onChange={(e) => {
+              SetProductSearch(e.target.value);
+            }}
+          />
+        </InputGroup>
+      </div>
+
       {user?.isAdmin ? (
         <div style={{ width: "80%" }}>
           {/* Button Inserir */}
@@ -113,11 +148,11 @@ export default function ListaProdutos() {
           </div>
 
           {/* Tabela para Edição de Produtos */}
-          <CustomTable data={products} columns={columnsProducts} />
+          <CustomTable data={productsFilter} columns={columnsProducts} />
         </div>
       ) : (
         <ProductListGrid
-          data={products}
+          data={productsFilter}
           onProductClicked={(obj) => {
             console.log(obj);
           }}
@@ -137,7 +172,6 @@ export default function ListaProdutos() {
           AttProduto(produto);
         }}
       />
-
       <ConfirmationModal
         isShow={isModalConfirmationOpen}
         message="Deseja excluir esse produto?"
