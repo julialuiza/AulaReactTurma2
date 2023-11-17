@@ -31,7 +31,7 @@ export default function ListaProdutos() {
 
   const [productSearch, SetProductSearch] = useState<string>("");
 
-  useEffect(() => {
+  useEffect(() => { 
     async function fetchData() {
       const res = await FetchProducts();
       SetProducts(res);

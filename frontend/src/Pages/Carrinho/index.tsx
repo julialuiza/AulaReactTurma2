@@ -1,23 +1,12 @@
-import { useEffect, useState } from "react";
 import { Card, Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { IProduto } from "../../services/produto.service";
 import CartItem from "./Components/CartItem";
 import { FetchProductsCarrinho } from "../../services/carrinho.service";
 import Checkout from "./Components/Checkout";
+import useFetch from "../../hooks/useFetch";
 
 export default function Cart() {
-  const [products, SetProducts] = useState<IProduto[]>();
-
-  useEffect(() => {
-    async function FetchData() {
-      const res = await FetchProductsCarrinho();
-      console.log(res);
-      SetProducts(res);
-    }
-
-    FetchData();
-  }, []);
+  const products = useFetch(FetchProductsCarrinho);
 
   return (
     <Card
@@ -30,16 +19,17 @@ export default function Cart() {
       <Card.Body>
         <h4>Produtos</h4>
         <Col lg={7} style={{ height: 400, width: "80%", overflow: "auto" }}>
-          {products !== undefined ? (
+          {products.data !== undefined ? (
             <>
-              {products!.map((produto) => {
+              {products.data!.map((produto) => {
                 return (
                   <CartItem key={produto.id} produto={produto} quantidade={1} />
                 );
               })}
+              {products.data!.length === 0 ? "Carrinho Vazio" : null}
             </>
           ) : (
-            "Loading..."
+            "Carregando..."
           )}
         </Col>
       </Card.Body>{" "}
