@@ -10,8 +10,9 @@ import { FinalizarCompra } from "../../../../services/carrinho.service";
 export default function Checkout() {
   async function RealizarCompra() {
     await FinalizarCompra();
-    window.location.href = "/carrinho";
+    window.location.reload();
   }
+
   return (
     <Col lg={5}>
       <Card bg="primary" text="white" className="rounded-3">
