@@ -134,19 +134,21 @@ export default function ListaProdutos() {
       </InputGroup>
 
       {user?.isAdmin ? (
-        <>
-          <Button
-            variant="success"
-            onClick={() => {
-              productToUpdate.current = null;
-              setIsAttAddModalOpen(true);
-            }}
-          >
-            Inserir Produto
-          </Button>
+        <div style={{ width: "80%" }}>
+          <div style={{ padding: 10 }}>
+            <Button
+              variant="success"
+              onClick={() => {
+                productToUpdate.current = null;
+                setIsAttAddModalOpen(true);
+              }}
+            >
+              Inserir Produto
+            </Button>
+          </div>
 
           <CustomTable data={filteredProducts} columns={columns} />
-        </>
+        </div>
       ) : (
         <ProductListGrid
           data={filteredProducts}

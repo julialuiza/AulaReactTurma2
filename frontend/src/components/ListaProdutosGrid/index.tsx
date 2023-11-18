@@ -9,45 +9,51 @@ interface GridViewProps {
   onProductClicked: (produto: IProduto) => void;
 }
 
-export default function ProductListGrid({
-  data,
-  onProductClicked,
-}: GridViewProps) {
+export default function ProductListGrid(props: GridViewProps) {
   return (
-    <Container className="product-grid-container">
-      {data.map((produto) => {
+    <Container
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexWrap: "wrap",
+      }}
+    >
+      {props.data.map((produto) => {
         const avaliable = produto.estoque > 0;
-        const cardClass = avaliable ? "custom-card" : "custom-card disabled";
-
+        const className = `custom-card ${avaliable ? "" : "disabled"}`;
         return (
-          <div key={produto.id} className={cardClass}>
-            <Card>
+          <div key={produto.id}>
+            <Card className={className} style={{ padding: 0, width: 250}}>
               <Card.Img
                 variant="top"
                 src="https://coyote.ca/wp/wp-content/uploads/2013/09/generic_brands_web_700x650.jpg"
                 alt="Produto"
               />
-              <Card.Body>
+              <Card.Body style={{ padding: 5 }}>
                 <Card.Title>{produto.nome}</Card.Title>
                 <Card.Text>R$ {produto.preco}</Card.Text>
+
                 <Button
                   variant="primary"
                   className="w-100"
                   disabled={!avaliable}
-                  onClick={() => avaliable && onProductClicked(produto)}
-                  aria-disabled={!avaliable}
+                  onClick={() => avaliable && props.onProductClicked(produto)}
                 >
-                  {avaliable ? (
-                    <>
-                      Carrinho
-                      <FontAwesomeIcon
-                        icon={faCartArrowDown}
-                        className="icon-spacing"
-                      />
-                    </>
-                  ) : (
-                    "Indisponível"
-                  )}
+                  <div>
+                    {avaliable ? (
+                      <div>
+                        Carrinho
+                        <FontAwesomeIcon
+                          icon={faCartArrowDown}
+                          style={{
+                            paddingLeft: 5,
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      "Indisponível"
+                    )}
+                  </div>
                 </Button>
               </Card.Body>
             </Card>

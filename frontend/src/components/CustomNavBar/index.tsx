@@ -34,12 +34,19 @@ export default function CustomNavBar() {
             <Nav.Link href="/">Produtos</Nav.Link>
           </Nav>
 
-          {user === undefined ? null : (
+          {user === undefined ? (
+            <Nav.Item style={{ margin: "0 auto" }}>
+              <Nav.Link color="red" href="/login">
+                <h6 style={{ color: "blue" , textDecoration: 'underline'}}>Entrar/Cadastrar</h6>
+              </Nav.Link>
+            </Nav.Item>
+          ) : (
             <>
               <Nav.Link onClick={() => LogoutUser()}>
                 <FontAwesomeIcon icon={faRightFromBracket} />
               </Nav.Link>
               <Nav style={{ margin: "0 auto" }}>User: {user?.email}</Nav>
+
               {!user.isAdmin ? (
                 <Nav>
                   <Nav.Link href="/carrinho">Carrinho</Nav.Link>
