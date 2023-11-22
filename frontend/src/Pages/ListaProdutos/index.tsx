@@ -15,29 +15,25 @@ import {
   FetchProducts,
   IProduto,
 } from "../../services/produto.service";
-import { User } from "../../services/login.service";
 
 import "../../App.css";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
-import { addCarrinho } from "../../redux/slices/carrinho.slice";
+import { AddCarrinho } from "../../services/carrinho.service";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 export default function ListaProdutos() {
   const [products, setProducts] = useState<IProduto[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProduto[]>([]);
-  const [user, setUser] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isAttAddModalOpen, setIsAttAddModalOpen] = useState(false);
 
   const productToDelete = useRef<IProduto | null>(null);
   const productToUpdate = useRef<IProduto | null>(null);
-
-  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     fetchProducts();
-    fetchUserFromLocalStorage();
   }, []);
 
   //ATUALIZA LISTA DE PRODUTOS FILTRADOS DE ACORDO COM O INPUT DO USER
@@ -59,14 +55,6 @@ export default function ListaProdutos() {
     setFilteredProducts(fetchedProducts);
   };
 
-  //PEGA INFORMAÇÕES DO USUÁRIO
-  const fetchUserFromLocalStorage = () => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  };
-
   //BUSCA PRODUTOS
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -75,8 +63,6 @@ export default function ListaProdutos() {
   const handleAddProduct = async (newProduct: IProduto) => {
     await CreateProduct(newProduct);
     setProducts([...products, newProduct]);
-
-    //fetchProducts();
   };
 
   const handleEditProduct = async (updatedProduct: IProduto) => {
@@ -93,7 +79,7 @@ export default function ListaProdutos() {
   };
 
   const handleAddToCart = async (product: IProduto) => {
-    dispatch(addCarrinho(product));
+    await AddCarrinho(product.id, 1);
   };
 
   const columns: TableColumn<IProduto>[] = [

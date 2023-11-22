@@ -2,7 +2,6 @@ import userReducer from "./slices/user.slice";
 import storageSession from "redux-persist/lib/storage/session";
 import { persistReducer, persistStore } from "redux-persist";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import carrinhoReducer from "./slices/carrinho.slice";
 
 const PersistConfig = {
   key: "root",
@@ -11,7 +10,6 @@ const PersistConfig = {
 
 const rootReducer = combineReducers({
   user: userReducer,
-  carrinho: carrinhoReducer,
 });
 
 const persistedReducer = persistReducer(PersistConfig, rootReducer);

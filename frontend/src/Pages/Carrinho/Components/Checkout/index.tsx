@@ -1,25 +1,61 @@
-import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { Button, Card, Col } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCcMastercard,
   faCcVisa,
   faCcDiscover,
 } from "@fortawesome/free-brands-svg-icons";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../redux/store";
-import { useEffect } from "react";
+import {
+  FinalizarCompra,
+  IProdutoCarrinho,
+} from "../../../../services/carrinho.service";
+import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
-export default function Checkout() {
-  const products = useSelector((state: RootState) => state.carrinho);
+export default function Checkout({
+  onClickPay,
+  produtosCarrinho,
+}: {
+  produtosCarrinho: IProdutoCarrinho[];
+  onClickPay: () => void;
+}) {
+  const [totalPrice, SetTotalPrice] = useState(0);
 
-  async function RealizarCompra() {}
+  async function RealizarCompra() {
+    try {
+      if (produtosCarrinho.length <= 0) throw Error("Carrinho vazio!");
+      await FinalizarCompra();
+      toast.info("Compra Realizada com Sucesso", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
 
+    onClickPay();
+  }
   useEffect(() => {
-    console.log(products);
-  }, []);
+    let valorTotal: number = 0;
+
+    if (produtosCarrinho !== undefined) {
+      produtosCarrinho.forEach((prod) => {
+        valorTotal += prod.preco * prod.quantidade;
+      });
+    }
+
+    SetTotalPrice(valorTotal);
+  }, [produtosCarrinho]);
 
   return (
     <Col lg={5}>
+      <ToastContainer />
       <Card bg="primary" text="white" className="rounded-3">
         <Card.Body>
           <p className="small mb-2">Cartões Aceitos</p>
@@ -38,51 +74,10 @@ export default function Checkout() {
             <FontAwesomeIcon size="2x" icon={faCcDiscover} />
           </div>
 
-          <Form>
-            <Form.Group className="mb-4">
-              <Form.Control
-                type="text"
-                id="typeName"
-                size="lg"
-                placeholder="Cardholder's Name"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-4">
-              <Form.Control
-                type="text"
-                id="typeText"
-                size="lg"
-                placeholder="1234 5678 9012 3457"
-              />
-            </Form.Group>
-
-            <Row className="mb-4">
-              <Col md={6}>
-                <Form.Group>
-                  <Form.Control
-                    type="text"
-                    id="typeExp"
-                    placeholder="MM/YYYY"
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group>
-                  <Form.Control
-                    type="password"
-                    placeholder="&#9679;&#9679;&#9679;"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-          </Form>
-
           <hr className="my-4" />
 
           <div className="d-flex justify-content-between mb-4">
-            <p className="mb-2">Total(Incl. taxas)</p>
-            <p className="mb-2">R$ {products.totalValor}</p>
+            <p className="mb-2">R$ {totalPrice}</p>
           </div>
 
           <Button variant="info" size="lg" onClick={() => RealizarCompra()}>
