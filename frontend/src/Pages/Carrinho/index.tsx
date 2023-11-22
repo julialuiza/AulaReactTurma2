@@ -1,13 +1,17 @@
 import { Card, Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CartItem from "./Components/CartItem";
-import { FetchProductsCarrinho } from "../../services/carrinho.service";
 import Checkout from "./Components/Checkout";
-import useFetch from "../../hooks/useFetch";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { useEffect } from "react";
 
 export default function Cart() {
-  const products = useFetch(FetchProductsCarrinho);
+  const products = useSelector((state: RootState) => state.carrinho);
 
+  useEffect(() => {
+    console.log(products);
+  }, []);
   return (
     <Card
       style={{
@@ -19,14 +23,18 @@ export default function Cart() {
       <Card.Body>
         <h4>Produtos</h4>
         <Col lg={7} style={{ height: 400, width: "80%", overflow: "auto" }}>
-          {products.data !== undefined ? (
+          {products.produtosCarrinho !== undefined ? (
             <>
-              {products.data!.map((produto) => {
+              {products.produtosCarrinho.map((produtoCarrinho) => {
                 return (
-                  <CartItem key={produto.id} produto={produto} quantidade={1} />
+                  <CartItem
+                    key={produtoCarrinho.produto.id}
+                    produto={produtoCarrinho.produto}
+                    quantidade={produtoCarrinho.quantidade}
+                  />
                 );
               })}
-              {products.data!.length === 0 ? "Carrinho Vazio" : null}
+              {products.produtosCarrinho.length === 0 ? "Carrinho Vazio" : null}
             </>
           ) : (
             "Carregando..."

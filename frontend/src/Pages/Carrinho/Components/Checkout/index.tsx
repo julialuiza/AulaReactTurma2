@@ -5,13 +5,18 @@ import {
   faCcVisa,
   faCcDiscover,
 } from "@fortawesome/free-brands-svg-icons";
-import { FinalizarCompra } from "../../../../services/carrinho.service";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../redux/store";
+import { useEffect } from "react";
 
 export default function Checkout() {
-  async function RealizarCompra() {
-    await FinalizarCompra();
-    window.location.reload();
-  }
+  const products = useSelector((state: RootState) => state.carrinho);
+
+  async function RealizarCompra() {}
+
+  useEffect(() => {
+    console.log(products);
+  }, []);
 
   return (
     <Col lg={5}>
@@ -75,14 +80,9 @@ export default function Checkout() {
 
           <hr className="my-4" />
 
-          <div className="d-flex justify-content-between">
-            <p className="mb-2">Subtotal</p>
-            <p className="mb-2">R$ 4798.00</p>
-          </div>
-
           <div className="d-flex justify-content-between mb-4">
             <p className="mb-2">Total(Incl. taxas)</p>
-            <p className="mb-2">R$ 4818.00</p>
+            <p className="mb-2">R$ {products.totalValor}</p>
           </div>
 
           <Button variant="info" size="lg" onClick={() => RealizarCompra()}>

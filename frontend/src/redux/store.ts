@@ -1,8 +1,8 @@
 import userReducer from "./slices/user.slice";
 import storageSession from "redux-persist/lib/storage/session";
 import { persistReducer, persistStore } from "redux-persist";
-import thunk from "redux-thunk";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import carrinhoReducer from "./slices/carrinho.slice";
 
 const PersistConfig = {
   key: "root",
@@ -11,13 +11,15 @@ const PersistConfig = {
 
 const rootReducer = combineReducers({
   user: userReducer,
+  carrinho: carrinhoReducer,
 });
 
 const persistedReducer = persistReducer(PersistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: [thunk],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

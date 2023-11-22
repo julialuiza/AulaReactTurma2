@@ -3,14 +3,17 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useState } from "react";
-import { CreateUser, DoLoginUser, User } from "../../services/login.service";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo.png";
 import { Image } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { createUser, login } from "../../redux/slices/user.slice";
+import { AppDispatch, RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
 
 export default function Login() {
   const [email, SetEmail] = useState("");
@@ -19,12 +22,15 @@ export default function Login() {
   const [isLogin, SetIsLogin] = useState(true);
   const [typeUser, SetTypeUser] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const userLogin = useSelector((state: RootState) => state.user);
 
   function LoginButton() {
     return (
       <div className="d-grid col-12">
         <Button
           variant="success"
+          disabled={userLogin.isLoading}
           onClick={() => {
             if (isLogin) DoLogin();
             else DoCreateUser();
@@ -49,11 +55,15 @@ export default function Login() {
     });
   }
 
+  useEffect(() => {
+    if (userLogin.isSucess) {
+      navigate("/");
+    }
+  }, [userLogin.isSucess]);
+
   async function DoLogin() {
     try {
-      const res: User = await DoLoginUser(email, password);
-      localStorage.setItem("user", JSON.stringify(res));
-      navigate("/");
+      await dispatch(login({ email: email, password: password }));
     } catch (error) {
       ToastError("Verifique suas credências e tente novamente");
     }
@@ -61,7 +71,14 @@ export default function Login() {
 
   async function DoCreateUser() {
     try {
-      await CreateUser(nome, email, password, typeUser);
+      await dispatch(
+        createUser({
+          nome: nome,
+          email: email,
+          password: password,
+          typeUser: typeUser,
+        })
+      );
       SetIsLogin(true);
     } catch (error) {
       ToastError("Verifique suas credências e tente novamente");

@@ -16,9 +16,11 @@ import {
   IProduto,
 } from "../../services/produto.service";
 import { User } from "../../services/login.service";
-import { AddCarrinho } from "../../services/carrinho.service";
 
 import "../../App.css";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store";
+import { addCarrinho } from "../../redux/slices/carrinho.slice";
 
 export default function ListaProdutos() {
   const [products, setProducts] = useState<IProduto[]>([]);
@@ -30,6 +32,8 @@ export default function ListaProdutos() {
 
   const productToDelete = useRef<IProduto | null>(null);
   const productToUpdate = useRef<IProduto | null>(null);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     fetchProducts();
@@ -70,7 +74,9 @@ export default function ListaProdutos() {
 
   const handleAddProduct = async (newProduct: IProduto) => {
     await CreateProduct(newProduct);
-    fetchProducts();
+    setProducts([...products, newProduct]);
+
+    //fetchProducts();
   };
 
   const handleEditProduct = async (updatedProduct: IProduto) => {
@@ -87,7 +93,7 @@ export default function ListaProdutos() {
   };
 
   const handleAddToCart = async (product: IProduto) => {
-    await AddCarrinho(product.id, 1);
+    dispatch(addCarrinho(product));
   };
 
   const columns: TableColumn<IProduto>[] = [
