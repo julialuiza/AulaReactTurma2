@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Table } from "react-bootstrap";
+import React, { ReactNode } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Button, Table } from 'react-bootstrap';
 
 export interface TableColumn<T> {
   acessor?: keyof T;
